@@ -1,3 +1,6 @@
 [submodule "ros2_ws/src/third_party/gaden"]
 	path = ros2_ws/src/third_party/gaden
 	url = git@github.com:MAPIRlab/gaden.git
+[submodule "ros2_ws/src/third_party/olfaction_msgs"]
+	path = ros2_ws/src/third_party/olfaction_msgs
+	url = https://github.com/MAPIRlab/olfaction_msgs.git
