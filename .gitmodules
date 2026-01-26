@@ -4,3 +4,6 @@
 [submodule "ros2_ws/src/third_party/olfaction_msgs"]
 	path = ros2_ws/src/third_party/olfaction_msgs
 	url = https://github.com/MAPIRlab/olfaction_msgs.git
+[submodule "ros2_ws/src/third_party/GSL"]
+	path = ros2_ws/src/third_party/GSL
+	url = https://github.com/MAPIRlab/GasSourceLocalization.git
