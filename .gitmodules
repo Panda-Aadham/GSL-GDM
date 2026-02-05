@@ -25,3 +25,6 @@
 [submodule "ros2_ws/src/third_party/BasicSim"]
 	path = ros2_ws/src/third_party/BasicSim
 	url = https://github.com/PepeOjeda/BasicSim.git
+[submodule "ros2_ws/src/third_party/ament_imgui"]
+	path = ros2_ws/src/third_party/ament_imgui
+	url = https://github.com/PepeOjeda/ament_imgui.git
