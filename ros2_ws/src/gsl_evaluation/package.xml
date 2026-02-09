@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>vgr_pmfs_house01_env</name>
+  <version>0.0.0</version>
+  <description>Wrapper environment for evaluation of GSL methods on the VGR dataset without modifying existing packages.</description>
+  <!-- Heriot-Watt University Email: Will be inactive as of June 2026 -->
+  <maintainer email="aa2212@hw.ac.uk">Aadham Ahmad</maintainer>
+
+  <license>GPLv3</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <exec_depend>ros2launch</exec_depend>
+  <exec_depend>xacro</exec_depend>
+  <exec_depend>gaden_common</exec_depend>
+  <exec_depend>vgr_dataset</exec_depend>
+  <exec_depend>pmfs_env</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
