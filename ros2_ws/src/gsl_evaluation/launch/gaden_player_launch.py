@@ -1,5 +1,5 @@
+import importlib.util
 import os
-import re
 import shutil
 import struct
 import tempfile
@@ -9,7 +9,12 @@ from csv import reader
 from pathlib import Path
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, OpaqueFunction, SetEnvironmentVariable, SetLaunchConfiguration
+from launch.actions import (
+    DeclareLaunchArgument,
+    OpaqueFunction,
+    SetEnvironmentVariable,
+    SetLaunchConfiguration,
+)
 from launch.conditions import IfCondition
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
@@ -22,56 +27,26 @@ GADEN_RESULT_IDENTIFIER = b"GADEN_RESULT\x00"
 GADEN_COMPRESSION_ZLIB = 1
 
 
+def _load_launch_helper(module_name):
+    module_path = Path(__file__).with_name(f"{module_name}.py")
+    spec = importlib.util.spec_from_file_location(module_name, module_path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+_launch_utils = _load_launch_helper("vgr_launch_utils")
+_parse_vgr_simulation_launch = _launch_utils.parse_vgr_simulation_launch
+_read_simple_yaml = _launch_utils.read_simple_yaml
+_set_launch_configs = _launch_utils.set_launch_configs
+
+
 def launch_arguments():
     return [
         DeclareLaunchArgument("scenario", default_value="House01"),
         DeclareLaunchArgument("simulation", default_value="1,3-2,4_fast"),
         DeclareLaunchArgument("use_rviz", default_value="False"),
     ]
-
-
-def _clean_scalar(value):
-    value = str(value).strip()
-    if len(value) >= 2 and value[0] == value[-1] and value[0] in ("'", '"'):
-        return value[1:-1]
-    return value
-
-
-def _read_simple_yaml(yaml_file: Path):
-    values = {}
-    for raw_line in yaml_file.read_text(encoding="utf-8").splitlines():
-        line = raw_line.split("#", 1)[0].strip()
-        if not line or ":" not in line:
-            continue
-        key, value = line.split(":", 1)
-        values[key.strip()] = _clean_scalar(value)
-    return values
-
-
-def _parse_vgr_simulation_launch(launch_file: Path):
-    text = launch_file.read_text(encoding="utf-8", errors="ignore")
-    args = dict(re.findall(r'<arg\s+name="([^"]+)"\s+default="([^"]*)"', text))
-
-    required = ("source_location_x", "source_location_y", "source_location_z", "gas_type")
-    missing = [name for name in required if name not in args]
-    if missing:
-        raise RuntimeError(f"Could not parse {', '.join(missing)} from '{launch_file}'.")
-
-    return {
-        "source_x": args["source_location_x"],
-        "source_y": args["source_location_y"],
-        "source_z": args["source_location_z"],
-        "gas_type": args["gas_type"],
-        "initial_iteration": 280,
-        "allow_looping": "true",
-        "loop_from_iteration": 280,
-        "loop_to_iteration": 288,
-    }
-
-
-def _set_launch_configs(context, values):
-    for key, value in values.items():
-        SetLaunchConfiguration(name=key, value=str(value)).execute(context)
 
 
 def _load_simulation_settings(context, pkg_dir, vgr_dir, scenario, simulation):
